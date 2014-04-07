@@ -28,6 +28,7 @@ public class WSS4JInterceptorHelper {
         outProps.put(WSHandlerConstants.USER, "client-alias");
         outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS, ClientKeystorePasswordCallbackHandler.class.getName());
         outProps.put(WSHandlerConstants.SIG_PROP_FILE, "client_sec.properties");
+        outProps.put(WSHandlerConstants.SIG_KEY_ID, "SKIKeyIdentifier");
 
         // for incoming messages: Signature and Timestamp validation. Response is Encrypted
         inProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.SIGNATURE + " " + WSHandlerConstants.TIMESTAMP + " " + WSHandlerConstants.ENCRYPT);
@@ -45,9 +46,9 @@ public class WSS4JInterceptorHelper {
      * @param interceptorProvider the provider to configure.
      */
     public static void addWSS4JInterceptors(InterceptorProvider interceptorProvider) {
-        interceptorProvider.getInInterceptors().add(wss4JInInterceptor);
-        interceptorProvider.getInInterceptors().add(new LoggingInInterceptor());
+        interceptorProvider.getInInterceptors().add (wss4JInInterceptor);
+//        interceptorProvider.getInInterceptors().add(new LoggingInInterceptor());
         interceptorProvider.getOutInterceptors().add(wss4JOutInterceptor);
-        interceptorProvider.getOutInterceptors().add(new LoggingOutInterceptor());
+//        interceptorProvider.getOutInterceptors().add(new LoggingOutInterceptor());
     }
 }

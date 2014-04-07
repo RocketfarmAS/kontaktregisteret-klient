@@ -70,9 +70,12 @@ public class KontaktRegisterSampler extends AbstractSampler implements TestBean 
                 boolean hasPostbox = intToBool(line.get(2).asInt());
 
                 map.put(ssn, Arrays.asList(skip, hasPostbox));
+
+                System.out.println(" <ns:personidentifikator>"+ ssn +"</ns:personidentifikator>");
             }
 
 
+            System.out.println("Number of persons " + map.keySet().size());
 
             JaxWsProxyFactoryBean jaxWsProxyFactoryBean = new JaxWsProxyFactoryBean();
             jaxWsProxyFactoryBean.setServiceClass(Oppslagstjeneste1405.class);
@@ -94,15 +97,17 @@ public class KontaktRegisterSampler extends AbstractSampler implements TestBean 
             HentPersonerForespoersel request = new HentPersonerForespoersel();
             request.getPersonidentifikator().addAll(map.keySet());
             request.getInformasjonsbehov().add(Informasjonsbehov.SIKKER_DIGITAL_POST);
+            request.getInformasjonsbehov().add(Informasjonsbehov.KONTAKTINFO);
+            request.getInformasjonsbehov().add(Informasjonsbehov.PERSON);
+            request.getInformasjonsbehov().add(Informasjonsbehov.SERTIFIKAT);
 
 
 
             HentPersonerRespons response = kontaktinfoPort.hentPersoner(request);
 
             for(Person person : response.getPerson()){
-
                 List<Boolean> booleans = map.get(person.getPersonidentifikator());
-                boolean skip = booleans.get(0);
+                boolean skip = false; //booleans.get(0);
                 boolean hasPostbox = booleans.get(1);
 
                 if(skip){
@@ -122,8 +127,10 @@ public class KontaktRegisterSampler extends AbstractSampler implements TestBean 
                         }else
                             ;
 
-                    }else
-                        return "error wrong or missing email " + person.getPersonidentifikator();
+                    }else{
+                        String epost = kontaktinformasjon == null ? "null" : kontaktinformasjon.getEpostadresse().getValue();
+                        return "error wrong or missing email " + person.getPersonidentifikator() + " -- " + epost;
+                    }
                 }
             }
 
@@ -157,7 +164,12 @@ public class KontaktRegisterSampler extends AbstractSampler implements TestBean 
 
         res.sampleStart();
 
-        String uri = getProtocol() + "://" + getHost() + ":" + getPort() + getPath();
+        String portPart = "";
+        if(port.length() > 0){
+            portPart = ":" + getPort();
+        }
+
+        String uri = getProtocol() + "://" + getHost() + portPart+ getPath();
         System.out.println("uri: " + uri);
         System.out.println("request" + getData());
 

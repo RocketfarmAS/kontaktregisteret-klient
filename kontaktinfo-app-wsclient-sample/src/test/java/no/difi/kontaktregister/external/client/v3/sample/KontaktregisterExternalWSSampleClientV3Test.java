@@ -84,6 +84,7 @@ public class KontaktregisterExternalWSSampleClientV3Test {
     	assertNotNull(personasResponse);
     	assertEquals(TEST_SSN_1, personasResponse.getPerson().get(0).getPersonidentifikator());
     	assertEquals(TEST_SSN_2, personasResponse.getPerson().get(1).getPersonidentifikator());
+
     }
     
     @Test
